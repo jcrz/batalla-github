@@ -1,23 +1,17 @@
 <template>
   <div id="app">
-    <!--<img alt="Vue logo" src="./assets/logo.png">-->
     <h1>Batalla de Github</h1>
     <div class="main">
-      <PerfilUsuario msg="Welcome to Your Vue.js App"/>
-      <PerfilUsuario msg="Welcome to Your Vue.js App"/>
+      <router-view />
     </div>
     
   </div>
 </template>
 
 <script>
-import PerfilUsuario from './components/PerfilUsuario'
-
 export default {
   name: 'App',
-  components: {
-    PerfilUsuario
-  }
+  
 }
 </script>
 
@@ -31,18 +25,22 @@ export default {
 body {
   background-color: #efefef;
 }
+h1 {
+  background-color: #fff;
+  padding: 10px 0;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: black;
-  margin-top: 30px;
 }
 .main {
-  margin-top: 30px;
+  margin-top: 15px;
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
 }
+
 </style>

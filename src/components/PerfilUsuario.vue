@@ -1,10 +1,13 @@
 <template>
   <div>
-    <div>
+    <div class="buscador">
       <input type="text" v-model="usuario" />
-      <button @click="updateUser">Buscar</button>
+      <button class="btn-buscar" @click="updateUser">Buscar</button>
     </div>
-    <div class="perfil-usuario">
+    <div>
+      <img v-if="isLoading" alt="Cargando" src="../assets/loading.gif" />
+    </div>
+    <div v-if="info && !isLoading" class="perfil-usuario">
       <div>
         <div class="header">
           <a :href="info.html_url" class="redirect">
@@ -47,12 +50,15 @@ export default {
   name: "PerfilUsuario",
   data() {
     return {
-      usuario: 'eantillanca',
+      usuario: "",
       info: null,
+      isLoading: false,
     };
   },
   mounted() {
-    this.getUserGitData();
+    if (this.usuario != "") {
+      this.getUserGitData();
+    }
   },
   methods: {
     updateUser() {
@@ -60,12 +66,28 @@ export default {
     },
     async getUserGitData() {
       try {
+        this.isLoading = true;
         let response = await this.$http.get(
           `https://api.github.com/users/${this.usuario}`
         );
         this.info = response.data;
+        this.isLoading = false;
       } catch (error) {
         console.log(`Ocurrio el siguiente error: ${error}`);
+        this.isLoading = false;
+        if (error.response) {
+          // here, you may want to drill even further to handle 400 and 500 level errors differently
+          alert("Usuario no encontrado.");
+          console.log(error.response);
+        } else if (error.request) {
+          // this will only be reached if the request didn't ever receive a response
+          alert("No hay respuesta del servidor..." + error.request);
+          console.log(error.request);
+        } else {
+          // something in the setup of the request triggered an error
+          alert("Error en la solicitud." + error.message);
+          console.log(error.message);
+        }
       }
     },
   },
@@ -76,6 +98,7 @@ export default {
 <style scoped>
 .perfil-usuario {
   position: relative;
+  margin-left: 30px;
   background-color: #fff;
   width: 400px;
   height: 500px;
@@ -83,6 +106,9 @@ export default {
   box-shadow: 0 5px 15px 1px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   overflow: hidden;
+}
+.buscador {
+  margin-left: 30px;
 }
 .perfil-usuario:before {
   content: "";
@@ -148,5 +174,27 @@ export default {
 }
 .estadisticas {
   padding: 1rem 2.5rem 2.6rem 2.5rem;
+}
+input {
+    width: 200px;
+    padding: 4px 20px;
+    border-radius: 20px;
+    border: 1px solid #f7f7f7;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+.btn-buscar {
+    border: none;
+    padding: 4px 20px;
+    border-radius: 20px;
+    background-image: linear-gradient(to left, #00e9f5, #4facfe);
+    box-shadow: 0 2px 2px 1px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    outline: none;
+}
+.btn-buscar:hover {
+    color: white;
 }
 </style>
